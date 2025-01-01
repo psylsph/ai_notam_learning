@@ -66,6 +66,7 @@ def haversine(lat1, lon1, lat2, lon2):
     return distance
 
 def is_location_in_notam(pipeline, notams_data, latitude, longitude):
+    matching_notams = []
     for notam in notams_data:
         notam_lat = float(notam['location'][0])
         notam_lon = float(notam['location'][1])
@@ -89,8 +90,12 @@ def is_location_in_notam(pipeline, notams_data, latitude, longitude):
             numerical_features = ['latitude', 'longitude', 'radius']
             categorical_features = ['start_date', 'end_date']
             prediction = pipeline.predict(input_data)
-            return prediction[0]
-    return "No NOTAM found for this location"
+            matching_notams.append(prediction[0])
+    
+    if matching_notams:
+        return matching_notams
+    else:
+        return "No NOTAM found for this location"
 
 def main():
     # Load and preprocess data
@@ -128,8 +133,9 @@ def main():
     #if test_longitude == "":
     #    test_longitude = 1.001
     
-    result = is_location_in_notam(pipeline, notams_data, float(test_latitude), float(test_longitude))
-    print(f"Location ({test_latitude}, {test_longitude}) is in NOTAM: {result}")
+    results = is_location_in_notam(pipeline, notams_data, float(test_latitude), float(test_longitude))
+    for result in results:
+        print(f"Location ({test_latitude}, {test_longitude}) is in NOTAM: {result}")
 
 if __name__ == "__main__":
     main()
