@@ -64,7 +64,7 @@ def haversine(lat1, lon1, lat2, lon2):
     return distance
 
 def is_location_in_notam(pipeline, notams_data, latitude, longitude):
-    for notam in notams_:
+    for notam in notams_data:
         notam_lat = float(notam['location'][0])
         notam_lon = float(notam['location'][1])
         notam_radius = float(notam['radius'].split(' ')[0]) * 1.852 # Convert nautical miles to km
