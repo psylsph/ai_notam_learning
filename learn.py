@@ -9,6 +9,8 @@ from sklearn.metrics import classification_report
 import numpy as np
 from math import radians, sin, cos, sqrt, atan2
 
+import test
+
 def load_and_preprocess(json_path):
     # Load JSON
     with open(json_path, 'r') as file:
@@ -116,10 +118,17 @@ def main():
     # Example usage of the inference function
     notams_data = json.load(open('notams.json', 'r'))
     
-    test_latitude = 51.61666666666667
-    test_longitude = -1.1
+    test_latitude = 51.88333333333333
+    test_longitude = 0.5666666666666667
     
-    result = is_location_in_notam(pipeline, notams_data, test_latitude, test_longitude)
+    #test_latitude = input("Enter Latitude: ")
+    #if test_latitude == "":
+    #    test_latitude = 51.581
+    #test_longitude = input("Enter Longitude: ")
+    #if test_longitude == "":
+    #    test_longitude = 1.001
+    
+    result = is_location_in_notam(pipeline, notams_data, float(test_latitude), float(test_longitude))
     print(f"Location ({test_latitude}, {test_longitude}) is in NOTAM: {result}")
 
 if __name__ == "__main__":
