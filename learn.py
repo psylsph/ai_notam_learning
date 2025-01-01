@@ -6,6 +6,8 @@ from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report
+import numpy as np
+from math import radians, sin, cos, sqrt, atan2
 
 def load_and_preprocess(json_path):
     # Load JSON
@@ -47,6 +49,50 @@ def create_pipeline(numerical_features, categorical_features):
     
     return pipeline
 
+def haversine(lat1, lon1, lat2, lon2):
+    R = 6371  # Radius of Earth in kilometers
+    
+    lat1, lon1, lat2, lon2 = map(radians, [lat1, lon1, lat2, lon2])
+    
+    dlon = lon2 - lon1
+    dlat = lat2 - lat1
+    
+    a = sin(dlat / 2)**2 + cos(lat1) * cos(lat2) * sin(dlon / 2)**2
+    c = 2 * atan2(sqrt(a), sqrt(1 - a))
+    
+    distance = R * c
+    return distance
+
+def is_location_in_notam(pipeline, notams_data, latitude, longitude):
+    for notam in notams_
+        notam_lat = float(notam['location'][0])
+        notam_lon = float(notam['location'][1])
+        notam_radius = float(notam['radius'].split(' ')[0]) * 1.852 # Convert nautical miles to km
+        
+        distance = haversine(latitude, longitude, notam_lat, notam_lon)
+        
+        if distance <= notam_radius:
+            
+            input_data = pd.DataFrame([{
+                'latitude': latitude,
+                'longitude': longitude,
+                'radius': notam_radius,
+                'start_date': notam['effective_from'],
+                'end_date': notam['effective_to']
+            }])
+            
+            input_data['start_date'] = pd.to_datetime((input_data['start_date']),format='%Y-%m-%dT%H:%M:%S+00:00').to_string()
+            input_data['end_date'] = pd.to_datetime((input_data['end_date']),format='%Y-%m-%dT%H:%M:%S+00:00').to_string()
+            
+            numerical_features = ['latitude', 'longitude', 'radius']
+            categorical_features = ['start_date', 'end_date']
+            
+            input_data = input_data[numerical_features + categorical_features]
+            
+            prediction = pipeline.predict(input_data)
+            return prediction[0]
+    return "No NOTAM found for this location"
+
 def main():
     # Load and preprocess data
     X, y = load_and_preprocess('notams.json')
@@ -69,6 +115,15 @@ def main():
     # Evaluate
     predictions = pipeline.predict(X_test)
     print(classification_report(y_test, predictions))
+    
+    # Example usage of the inference function
+    notams_data = json.load(open('notams.json', 'r'))
+    
+    test_latitude = 51.61666666666667
+    test_longitude = -1.1
+    
+    result = is_location_in_notam(pipeline, notams_data, test_latitude, test_longitude)
+    print(f"Location ({test_latitude}, {test_longitude}) is in NOTAM: {result}")
 
 if __name__ == "__main__":
     main()
