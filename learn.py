@@ -24,8 +24,8 @@ def load_and_preprocess(json_path):
     df['radius'] = df['radius'].str[0]
     # 2024-05-31T17:00:00+00:00
     print(pd.to_datetime((df['effective_from']),format='%Y-%m-%dT%H:%M:%S+00:00'))
-    df['start_date'] = pd.to_datetime((df['effective_from']),format='%Y-%m-%dT%H:%M:%S+00:00').to_string()
-    df['end_date'] = pd.to_datetime((df['effective_to']),format='%Y-%m-%dT%H:%M:%S+00:00').to_string()
+    df['start_date'] = pd.to_datetime((df['effective_from']),format='%Y-%m-%dT%H:%M:%S+00:00')
+    df['end_date'] = pd.to_datetime((df['effective_to']),format='%Y-%m-%dT%H:%M:%S+00:00')
     
     df.drop(columns=['guid', 'link', 'raw_description', 'publication_date', 'lower_limit', 'upper_limit', 'message', 'effective_from', 'effective_to'], inplace=True)
     X = df.drop(columns='title')
@@ -81,8 +81,8 @@ def is_location_in_notam(pipeline, notams_data, latitude, longitude):
                 'end_date': notam['effective_to']
             }])
             
-            input_data['start_date'] = pd.to_datetime((input_data['start_date']),format='%Y-%m-%dT%H:%M:%S+00:00').to_string()
-            input_data['end_date'] = pd.to_datetime((input_data['end_date']),format='%Y-%m-%dT%H:%M:%S+00:00').to_string()
+            input_data['start_date'] = pd.to_datetime((input_data['start_date']),format='%Y-%m-%dT%H:%M:%S+00:00')
+            input_data['end_date'] = pd.to_datetime((input_data['end_date']),format='%Y-%m-%dT%H:%M:%S+00:00')
             
             numerical_features = ['latitude', 'longitude', 'radius']
             categorical_features = ['start_date', 'end_date']
