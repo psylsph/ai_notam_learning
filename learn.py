@@ -86,9 +86,6 @@ def is_location_in_notam(pipeline, notams_data, latitude, longitude):
             
             numerical_features = ['latitude', 'longitude', 'radius']
             categorical_features = ['start_date', 'end_date']
-            
-            input_data = input_data[numerical_features + categorical_features]
-            
             prediction = pipeline.predict(input_data)
             return prediction[0]
     return "No NOTAM found for this location"
@@ -97,20 +94,20 @@ def main():
     # Load and preprocess data
     X, y = load_and_preprocess('notams.json')
     
-    # Split data
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
-    
-    #print(X_train)
-    print(X_test)
-    #print(y_train)
-    
     # Define features
     numerical_features = ['latitude', 'longitude', 'radius']  # Replace with your features
     categorical_features = ['start_date', 'end_date']  # Replace with your features
     
     # Create and train pipeline
     pipeline = create_pipeline(numerical_features, categorical_features)
-    pipeline.fit(X_train, y_train)
+    pipeline.fit(X, y)
+    
+    # Split data
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+    
+    #print(X_train)
+    print(X_test)
+    #print(y_train)
     
     # Evaluate
     predictions = pipeline.predict(X_test)
